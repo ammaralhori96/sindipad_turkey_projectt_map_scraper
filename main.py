@@ -1,5 +1,7 @@
+
 import os
 import random
+import csv
 import time
 import pyautogui
 from datetime import datetime, date
@@ -35,9 +37,7 @@ def broswer(url_user):
     time.sleep(3)
     driver.get(  url_user )
 
-
-for file_name in os.listdir("imgs"):
-    os.remove("imgs\\" +file_name)
+city="trabzon"
 
 #userUrl="https://www.google.com.tr/maps/place/Uzung%C3%B6l/@40.6186688,40.2833083,15.16z/data=!4m6!3m5!1s0x4065945de49ab2e7:0x4e935acb0b0a48ad!8m2!3d40.6194407!4d40.2960778!16zL20vMDZkeGxi?hl=en&authuser=0"
 #userUrl="https://www.google.com.tr/maps/place/GRAND+%C3%96ZT%C3%9CRK+Uzung%C3%B6l/@40.6207735,40.2797654,15.16z/data=!4m9!3m8!1s0x4065c7fbbaa71a1b:0xf33ddebbcd9f34d2!5m2!4m1!1i2!8m2!3d40.6201223!4d40.2856253!16s%2Fg%2F11j0_jf6r3?hl=en&authuser=0"
@@ -59,7 +59,7 @@ except:
 
 time.sleep(5)
 
-def gittingInformations():
+def gittingInformations(areaType):
 
     userUrl=str(driver.current_url)
     xyLoc1= userUrl.find("!3d")
@@ -69,34 +69,80 @@ def gittingInformations():
     for i in range(xyLoc1+3,xyLoc3):
         xyLocN= xyLocN+userUrl[i]
     xyLocN=xyLocN.replace("!4d",",")
-    
-
     print(xyLocN)
+    ####################cheking the name is found
+
+    
+    
+    
     locName = driver.find_element(By.CLASS_NAME,"DUwDvf.fontHeadlineLarge" ).text
     print(locName)
-    locStarsClase = driver.find_element(By.CLASS_NAME,"fontBodyMedium.dmRWX" ).text
-    locStars=""
-    for i in locStarsClase:
-        if i == "\n": break
-        locStars=locStars+i
-    try:
-        locStars=float(locStars)
-    except:
-        locStars=locStars.replace(",",".")
-        locStars=float(locStars)
-    print(locStars)
 
-    #locNamper = driver.find_elements(By.CLASS_NAME,"RcCsl.fVHpi.w4vB1d.NOE9ve.M0S7ae.AG25L" )[1].text
-    #print(locNamper)
-    # time.sleep(5)
-    # print(locNamper[0])
-    # print(locNamper[1])
-    # if locNamper[0]!=0 or locNamper[1]!=0 :
+    def find_row(word):
+        counter = 0
+        
+        if city+".txt" in os.listdir():   
+            with open(city+".txt","r",encoding='utf-8') as a_file:
+                for line in a_file:
+                    if word in line:
+                        print(counter)
+                        a_file.close()
+                        return "yes"
+                    counter += 1
+        else :
+           x= open(city+".txt","w",encoding='utf-8') 
+           x.close
+    chickingXyLoc=find_row(locName)
+    
+    
+    if(chickingXyLoc!="yes"):
+        with open(city+".txt", 'a',encoding='utf-8' ) as f:
+            f.write("\n"+locName)
+            f.close()
+        locStarsClase = driver.find_element(By.CLASS_NAME,"fontBodyMedium.dmRWX" ).text
+        locStars=""
+        for i in locStarsClase:
+            if i == "\n": break
+            locStars=locStars+i
+        try:
+            if locStars== "":
+                locStars= 4.0
+            locStars=float(locStars)
+        except:
+            locStars=locStars.replace(",",".")
+            if locStars== "":
+                locStars= 4.0
+            locStars=float(locStars)
+        print(locStars)
 
-    # locNamper = driver.find_elements(By.CLASS_NAME,"RcCsl.fVHpi.w4vB1d.NOE9ve.M0S7ae.AG25L" )[2].text
-    # print(locNamper)
 
-gittingInformations()
+        randomNum=random.randint(10, 50)
+        data = [city ,areaType,locName, locStars,randomNum, xyLocN ]
+
+
+        with open('data.csv', 'a', encoding='utf-8', newline='') as f:
+            writer = csv.writer(f)
+
+            # write the data
+            writer.writerow(data)
+
+        return locName
+
+        #locNamper = driver.find_elements(By.CLASS_NAME,"RcCsl.fVHpi.w4vB1d.NOE9ve.M0S7ae.AG25L" )[1].text
+        #print(locNamper)
+        # time.sleep(5)
+        # print(locNamper[0])
+        # print(locNamper[1])
+        # if locNamper[0]!=0 or locNamper[1]!=0 :
+
+        # locNamper = driver.find_elements(By.CLASS_NAME,"RcCsl.fVHpi.w4vB1d.NOE9ve.M0S7ae.AG25L" )[2].text
+        # print(locNamper)
+    else:
+        print("the area is exisist")
+
+        return "is exisist"
+
+
 ################download photos###################################
 
 # driver.find_element(By.CLASS_NAME,"YkuOqf" ).click() # photos button
@@ -104,9 +150,8 @@ gittingInformations()
 # driver.find_element(By.CLASS_NAME,"zbrIY.oms55c" ).click() # back button
 # time.sleep(3)
 
-def gittingPhotos():
-    for file_name in os.listdir("imgs"):
-        os.remove("imgs\\" +file_name)
+def gittingPhotos(checkExist , photoNum):
+    os.mkdir("imgs\\" +checkExist)
 
     photosNumper= ""
     try: 
@@ -119,7 +164,7 @@ def gittingPhotos():
         print(photosNumper)
     if photosNumper != "No Photos":
         time.sleep(5)
-        for x in range (2):
+        for x in range (photoNum):
             
             try:
                 photo=driver.find_elements(By.CLASS_NAME,"Uf0tqf.loaded" )[x].get_attribute("style")
@@ -138,7 +183,7 @@ def gittingPhotos():
 
                 # فتح صورة فارغة بإسم الصورة المطلوبة
                 f = open(
-                    "imgs\\" + "Photo"  +  str(x)+ '.jpg',
+                    "imgs\\" +checkExist +"\\"+ "Photo"  +  str(x)+ '.jpg',
                     'wb')
 
                 # طباعة محتويات الصورة المأخوذة بداخل الصفحة الفارغة
@@ -148,7 +193,10 @@ def gittingPhotos():
             except: pass
         driver.find_element(By.CLASS_NAME,"zbrIY.oms55c" ).click() # back button
         time.sleep(3)
-gittingPhotos()        
+
+checkExist=gittingInformations("area")
+if (checkExist != "is exisist"):
+    gittingPhotos(checkExist, 15)      
 
     ################serching###################################
 def serching2(loc):
@@ -180,29 +228,32 @@ def serching( about , numperLoc, removeText):
 for n in range(3):
 
     if n ==0 :
-        for g in range(1):
+        for g in range(3):
             if g!= 0: serching("eczane", g, "n")
             elif g==0 :serching("eczane", g, "y")  
-            gittingInformations()
-            gittingPhotos()
+            checkExist=gittingInformations("eczane")
+            if (checkExist != "is exisist"):
+                gittingPhotos(checkExist, 5)
 
     
 
     if n ==1 :
         serching2(xyLoc)
-        for g in range(1):
+        for g in range(5):
             if g!= 0: serching("Lokanta", g, "n")
             elif g==0 :serching("Lokanta", g, "y")  
-            gittingInformations()
-            gittingPhotos()
+            checkExist=gittingInformations("Lokanta")
+            if (checkExist != "is exisist"):
+                gittingPhotos(checkExist,15)
     
     if n ==2 :
         serching2(xyLoc)
-        for g in range(1):
+        for g in range(3):
             if g!= 0: serching("cami", g, "n")
             elif g==0 :serching("cami", g, "y")  
-            gittingInformations()
-            gittingPhotos()
+            checkExist=gittingInformations("cami")
+            if (checkExist != "is exisist"):
+                gittingPhotos(checkExist,1)
 
 
 #####################################################################
