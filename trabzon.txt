@@ -1,12 +1,5 @@
 
-Uzungöl
-Sağlık Eczanesi
-Uzungöle Lokantası
-TEBA RESTAURANT
-أبو حاتم أوزنجول
-TAİBA RESTAURANT مطعم وكافيه طيبة
-İlhan Restorant
-masjid cami
+<<<<<<< HEAD
 Uzungöl's Mosque
 Filak Mahallesi Mosque
 Ayder Yaylası
@@ -20,3 +13,6 @@ Damla Restoran
 Zümrüt Restaurant
 Kırklar Cami
 Kavrun Cami
+=======
+Uzungöl Cami
+>>>>>>> 43c4fdc00d9b0aec3da5994fd172575e3a6835b6
