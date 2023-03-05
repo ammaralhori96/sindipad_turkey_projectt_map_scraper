@@ -2,9 +2,9 @@ import requests
 import os
 import pandas
 
-
+city="Rize"
 url = 'https://seasonturk.com/api/method/tourism_backend.upload_data.upload_data'
-imgs_folder = 'imgs'
+imgs_folder = 'imgs\\'+city
 csv_data_file = "data.csv"
 
 data_file = pandas.read_csv(csv_data_file)
