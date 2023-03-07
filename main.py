@@ -37,7 +37,7 @@ def broswer(url_user):
     time.sleep(3)
     driver.get(  url_user )
 
-city="Antalya"
+city="istanbul"
         
 
             
@@ -84,8 +84,14 @@ if "ListUrls.txt" in os.listdir():
 
                 
                 
-                
-                locName = driver.find_element(By.CLASS_NAME,"DUwDvf.fontHeadlineLarge" ).text
+                try:
+                    locName = driver.find_element(By.CLASS_NAME,"DUwDvf.fontHeadlineLarge" ).text
+                except:
+                    time.sleep(1)
+                    driver.refresh()
+                    time.sleep(3)
+                    locName = driver.find_element(By.CLASS_NAME,"DUwDvf.fontHeadlineLarge" ).text
+                    time.sleep(3)
                 if "&" in locName:
                     locName.replace("&", " ")
                 print(locName)
@@ -96,7 +102,7 @@ if "ListUrls.txt" in os.listdir():
                     if city+".txt" in os.listdir():   
                         with open(city+".txt","r",encoding='utf-8') as a_file:
                             for line in a_file:
-                                if word == line:
+                                if word in line:
                                     print(counter)
                                     a_file.close()
                                     return "yes"
@@ -225,8 +231,14 @@ if "ListUrls.txt" in os.listdir():
 
                 ################serching###################################
             def serching2(loc):
-                    driver.find_element(By.CLASS_NAME,"gsst_a" ).click() # remove text button
-                    time.sleep(3)
+                    
+                    try:
+                        driver.find_element(By.CLASS_NAME,"gsst_a" ).click() # remove text button
+                        time.sleep(3)
+                    except:
+                        time.sleep(3)
+                        driver.find_element(By.ID,"sb_cb50" ) .click() # remove text button
+                        time.sleep(3)
                     driver.find_element(By.CLASS_NAME,"tactile-searchbox-input.searchboxinput.xiQnY" ).send_keys(loc)
                     time.sleep(3)
                     driver.find_element(By.ID,"searchbox-searchbutton" ).click() # serch button
@@ -236,8 +248,13 @@ if "ListUrls.txt" in os.listdir():
 
             def serching( about , numperLoc, removeText):
                 if removeText=="y":     
-                    driver.find_element(By.CLASS_NAME,"gsst_a" ).click() # remove text button
-                    time.sleep(3)
+                    try:
+                        driver.find_element(By.CLASS_NAME,"gsst_a" ).click() # remove text button
+                        time.sleep(3)
+                    except:
+                        time.sleep(3)
+                        driver.find_element(By.ID,"sb_cb50" ) .click() # remove text button
+                        time.sleep(3)
                     driver.find_element(By.CLASS_NAME,"tactile-searchbox-input.searchboxinput.xiQnY" ).send_keys(about)
                     time.sleep(3)
                     driver.find_element(By.CLASS_NAME,"mL3xi" ).click() # serch button
