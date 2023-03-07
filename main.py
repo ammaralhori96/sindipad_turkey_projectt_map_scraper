@@ -3,7 +3,7 @@ import os
 import random
 import csv
 import time
-import pyautogui
+import shutil
 from datetime import datetime, date
 from selenium import webdriver
 from selenium.webdriver import ActionChains
@@ -37,8 +37,11 @@ def broswer(url_user):
     time.sleep(3)
     driver.get(  url_user )
 
-city="Rize"
+city="Antalya"
         
+
+            
+
 if "ListUrls.txt" in os.listdir():   
     with open("ListUrls.txt","r",encoding='utf-8') as a_file:
         for url in a_file:
@@ -49,6 +52,7 @@ if "ListUrls.txt" in os.listdir():
 
             #userUrl=str(input("Enter map Url:"))
             userUrl=url
+            
             xyLoc1= userUrl.find("!3d")
             xyLoc2=userUrl.find("!",xyLoc1+3)
             xyLoc3=userUrl.find("!",xyLoc2+3)
@@ -63,7 +67,7 @@ if "ListUrls.txt" in os.listdir():
                 broswer( "https://"+ userUrl)
 
 
-            time.sleep(5)
+            time.sleep(10)
 
             def gittingInformations(areaType):
                 
@@ -82,6 +86,8 @@ if "ListUrls.txt" in os.listdir():
                 
                 
                 locName = driver.find_element(By.CLASS_NAME,"DUwDvf.fontHeadlineLarge" ).text
+                if "&" in locName:
+                    locName.replace("&", " ")
                 print(locName)
 
                 def find_row(word):
@@ -90,7 +96,7 @@ if "ListUrls.txt" in os.listdir():
                     if city+".txt" in os.listdir():   
                         with open(city+".txt","r",encoding='utf-8') as a_file:
                             for line in a_file:
-                                if word in line:
+                                if word == line:
                                     print(counter)
                                     a_file.close()
                                     return "yes"
@@ -104,7 +110,8 @@ if "ListUrls.txt" in os.listdir():
                 
                 if(chickingXyLoc!="yes"):
                     with open(city+".txt", 'a',encoding='utf-8' ) as f:
-                        f.write("\n"+locName)
+                        f.write("\n")
+                        f.write(locName)
                         f.close()
                     try:
                         locStarsClase = driver.find_element(By.CLASS_NAME,"fontBodyMedium.dmRWX" ).text
@@ -181,8 +188,10 @@ if "ListUrls.txt" in os.listdir():
                     for x in range (photoNum):
                         
                         try:
-                            photo=driver.find_elements(By.CLASS_NAME,"Uf0tqf.loaded" )[x].get_attribute("style")
                             driver.execute_script("document.getElementsByClassName('m6QErb DxyBCb kA9KIf dS8AEf')[0].scroll(0,"+str(1000*x)+")")
+                            time.sleep(1)
+                            photo=driver.find_elements(By.CLASS_NAME,"Uf0tqf.loaded" )[x].get_attribute("style")
+                            
                             
                             #pyautogui.moveTo(240,850)
                             #pyautogui.scroll(-1000)
@@ -260,14 +269,16 @@ if "ListUrls.txt" in os.listdir():
                                     if (checkExist != "is exisist"):
                                         gittingPhotos(checkExist, 5)
                                         x+=1
+                                    print("try")
                                 except: 
                                     photosNumper="No Photos"
                                     print(photosNumper) 
+
                                     checkExist=gittingInformations("eczane")
                                     if (checkExist != "is exisist"):
                                         gittingPhotos(checkExist, 5)
                                         x+=1
-                                        os.replace("Logo.jpg","imgs\\"+city+"\\" +checkExist+ "\\Logo.jpg")
+                                        shutil.copy("Logo.jpg","imgs\\"+city+"\\" +checkExist+ "\\Logo.jpg")
 
                             else:
                                 break
@@ -353,7 +364,7 @@ if "ListUrls.txt" in os.listdir():
                                     if (checkExist != "is exisist"):
                                         gittingPhotos(checkExist, 5)
                                         x+=1
-                                        os.replace("Logo.jpg","imgs\\"+city+"\\" +checkExist+ "\\Logo.jpg")
+                                        shutil.copy("Logo.jpg","imgs\\"+city+"\\" +checkExist+ "\\Logo.jpg")
                             else:
                                 break
                             

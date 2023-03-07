@@ -2,7 +2,7 @@ import requests
 import os
 import pandas
 
-city="Rize"
+city="Antalya"
 url = 'https://seasonturk.com/api/method/tourism_backend.upload_data.upload_data'
 imgs_folder = 'imgs\\'+city
 csv_data_file = "data.csv"
