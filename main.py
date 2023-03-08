@@ -93,7 +93,7 @@ if "ListUrls.txt" in os.listdir():
                     locName = driver.find_element(By.CLASS_NAME,"DUwDvf.fontHeadlineLarge" ).text
                     time.sleep(3)
                 if "&" in locName:
-                    locName.replace("&", " ")
+                    locName=locName.replace("&", " ")
                 print(locName)
 
                 def find_row(word):
