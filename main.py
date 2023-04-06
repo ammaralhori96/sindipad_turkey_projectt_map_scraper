@@ -19,6 +19,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from fake_useragent import UserAgent
 import requests
+
+city="Mersin"
+
 def broswer(url_user):
     global driver
     opt = Options()
@@ -37,39 +40,98 @@ def broswer(url_user):
     time.sleep(3)
     driver.get(  url_user )
 
-city="istanbul"
+
         
+oneTypePosts="y"
+if oneTypePosts == "y":
+        typeAreaList=["eczane","Lokanta","cami", "mall"]
+        typeArea=typeAreaList[3]
+        city="Rize"
 
-            
+def gittingPhotos(checkExist , photoNum):
+        if city in os.listdir("imgs\\"):   
+                os.mkdir("imgs\\"+city+"\\" +checkExist)
+        else:  
+            os.mkdir("imgs\\"+city)
+            os.mkdir("imgs\\"+city+"\\" +checkExist)
 
-if "ListUrls.txt" in os.listdir():   
-    with open("ListUrls.txt","r",encoding='utf-8') as a_file:
-        for url in a_file:
-            time.sleep(5)
-
-            #userUrl="https://www.google.com.tr/maps/place/Uzung%C3%B6l/@40.6186688,40.2833083,15.16z/data=!4m6!3m5!1s0x4065945de49ab2e7:0x4e935acb0b0a48ad!8m2!3d40.6194407!4d40.2960778!16zL20vMDZkeGxi?hl=en&authuser=0"
-            #userUrl="https://www.google.com.tr/maps/place/GRAND+%C3%96ZT%C3%9CRK+Uzung%C3%B6l/@40.6207735,40.2797654,15.16z/data=!4m9!3m8!1s0x4065c7fbbaa71a1b:0xf33ddebbcd9f34d2!5m2!4m1!1i2!8m2!3d40.6201223!4d40.2856253!16s%2Fg%2F11j0_jf6r3?hl=en&authuser=0"
-
-            #userUrl=str(input("Enter map Url:"))
-            userUrl=url
-            
-            xyLoc1= userUrl.find("!3d")
-            xyLoc2=userUrl.find("!",xyLoc1+3)
-            xyLoc3=userUrl.find("!",xyLoc2+3)
-            xyLoc=""
-            for i in range(xyLoc1+3,xyLoc3):
-                xyLoc= xyLoc+userUrl[i]
-            xyLoc=xyLoc.replace("!4d",",")
-            print(xyLoc)
+        photosNumper= ""
+        try: 
             try:
-                broswer(userUrl)
+                driver.find_element(By.CLASS_NAME,"YkuOqf" ).click() # photos button
             except:
-                broswer( "https://"+ userUrl)
+                driver.find_element(By.CLASS_NAME,"jtJMuf" ).click() # photos button2
+        except: 
+            photosNumper="No Photos"
+            print(photosNumper)
+        if photosNumper != "No Photos":
+            time.sleep(5)
+            for x in range (photoNum):
+                
+                try:
+                    driver.execute_script("document.getElementsByClassName('m6QErb DxyBCb kA9KIf dS8AEf')[0].scroll(0,"+str(1000*x)+")")
+                    time.sleep(1)
+                    photo=driver.find_elements(By.CLASS_NAME,"Uf0tqf.loaded" )[x].get_attribute("style")
+                    
+                    
+                    #pyautogui.moveTo(240,850)
+                    #pyautogui.scroll(-1000)
+                    time.sleep(1)
+                    
+                
+                    xyLoc1=photo.find('"')
+                    xyLoc3=photo.find('"',xyLoc1+1)
+                    photoUrl=""
 
+                    for i in range(xyLoc1+1,xyLoc3):
+                        photoUrl= photoUrl+photo[i]
+                    #print(photoUrl)
 
-            time.sleep(10)
+                    # فتح صورة فارغة بإسم الصورة المطلوبة
+                    f = open(
+                        "imgs\\"+city+"\\" +checkExist +"\\"+ "Photo"  +  str(x)+ '.jpg',
+                        'wb')
 
-            def gittingInformations(areaType):
+                    # طباعة محتويات الصورة المأخوذة بداخل الصفحة الفارغة
+                    f.write(requests.get(photoUrl).content)
+                    time.sleep(1)
+                    f.close()
+                except: pass
+            driver.find_element(By.CLASS_NAME,"zbrIY.oms55c" ).click() # back button
+            time.sleep(3)
+
+def serching2(loc):           
+            try:
+                driver.find_element(By.CLASS_NAME,"gsst_a" ).click() # remove text button
+                time.sleep(3)
+            except:
+                time.sleep(3)
+                driver.find_element(By.ID,"sb_cb50" ) .click() # remove text button
+                time.sleep(3)
+            driver.find_element(By.CLASS_NAME,"tactile-searchbox-input.searchboxinput.xiQnY" ).send_keys(loc)
+            time.sleep(3)
+            driver.find_element(By.ID,"searchbox-searchbutton" ).click() # serch button
+            time.sleep(3)
+            driver.find_element(By.ID,"searchbox-searchbutton" ).click() # serch button
+            time.sleep(3)
+
+def serching( about , numperLoc, removeText):
+    if removeText=="y":     
+        try:
+            driver.find_element(By.CLASS_NAME,"gsst_a" ).click() # remove text button
+            time.sleep(3)
+        except:
+            time.sleep(3)
+            driver.find_element(By.ID,"sb_cb50" ) .click() # remove text button
+            time.sleep(3)
+        driver.find_element(By.CLASS_NAME,"tactile-searchbox-input.searchboxinput.xiQnY" ).send_keys(about)
+        time.sleep(3)
+        driver.find_element(By.CLASS_NAME,"mL3xi" ).click() # serch button
+    time.sleep(5)
+    print("numperLoc", str(numperLoc))
+    driver.find_elements(By.CLASS_NAME,"hfpxzc" )[numperLoc].click() # numperLoc button
+    time.sleep(5)
+def gittingInformations(areaType):
                 
                 userUrl=str(driver.current_url)
                 xyLoc1= userUrl.find("!3d")
@@ -94,6 +156,22 @@ if "ListUrls.txt" in os.listdir():
                     time.sleep(3)
                 if "&" in locName:
                     locName=locName.replace("&", " ")
+                if ":" in locName:
+                    locName=locName.replace(":", " ")
+                if "." in locName:
+                    locName=locName.replace(".", " ")
+                if "|" in locName:
+                    locName=locName.replace("|", " ")
+                if "\\" in locName:
+                    locName=locName.replace("\\", " ")
+                if "\"" in locName:
+                    locName=locName.replace("\"", " ")
+                if "/" in locName:
+                    locName=locName.replace("/", " ")
+                if "?" in locName:
+                    locName=locName.replace("?", " ")
+                if "!" in locName:
+                    locName=locName.replace("!", " ")
                 print(locName)
 
                 def find_row(word):
@@ -166,6 +244,36 @@ if "ListUrls.txt" in os.listdir():
                     return "is exisist"
 
 
+
+
+if "ListUrls.txt" in os.listdir():   
+    with open("ListUrls.txt","r",encoding='utf-8') as a_file:
+        for url in a_file:
+            time.sleep(5)
+
+            #userUrl="https://www.google.com.tr/maps/place/Uzung%C3%B6l/@40.6186688,40.2833083,15.16z/data=!4m6!3m5!1s0x4065945de49ab2e7:0x4e935acb0b0a48ad!8m2!3d40.6194407!4d40.2960778!16zL20vMDZkeGxi?hl=en&authuser=0"
+            #userUrl="https://www.google.com.tr/maps/place/GRAND+%C3%96ZT%C3%9CRK+Uzung%C3%B6l/@40.6207735,40.2797654,15.16z/data=!4m9!3m8!1s0x4065c7fbbaa71a1b:0xf33ddebbcd9f34d2!5m2!4m1!1i2!8m2!3d40.6201223!4d40.2856253!16s%2Fg%2F11j0_jf6r3?hl=en&authuser=0"
+
+            #userUrl=str(input("Enter map Url:"))
+            userUrl=url
+            
+            xyLoc1= userUrl.find("!3d")
+            xyLoc2=userUrl.find("!",xyLoc1+3)
+            xyLoc3=userUrl.find("!",xyLoc2+3)
+            xyLoc=""
+            for i in range(xyLoc1+3,xyLoc3):
+                xyLoc= xyLoc+userUrl[i]
+            xyLoc=xyLoc.replace("!4d",",")
+            print(xyLoc)
+            try:
+                broswer(userUrl)
+            except:
+                broswer( "https://"+ userUrl)
+
+
+            time.sleep(30)
+
+            
             ################download photos###################################
 
             # driver.find_element(By.CLASS_NAME,"YkuOqf" ).click() # photos button
@@ -173,228 +281,147 @@ if "ListUrls.txt" in os.listdir():
             # driver.find_element(By.CLASS_NAME,"zbrIY.oms55c" ).click() # back button
             # time.sleep(3)
 
-            def gittingPhotos(checkExist , photoNum):
-                if city in os.listdir("imgs\\"):   
-                        os.mkdir("imgs\\"+city+"\\" +checkExist)
-                else:  
-                    os.mkdir("imgs\\"+city)
-                    os.mkdir("imgs\\"+city+"\\" +checkExist)
-    
-                photosNumper= ""
-                try: 
-                    try:
-                        driver.find_element(By.CLASS_NAME,"YkuOqf" ).click() # photos button
-                    except:
-                        driver.find_element(By.CLASS_NAME,"jtJMuf" ).click() # photos button2
-                except: 
-                    photosNumper="No Photos"
-                    print(photosNumper)
-                if photosNumper != "No Photos":
-                    time.sleep(5)
-                    for x in range (photoNum):
-                        
-                        try:
-                            driver.execute_script("document.getElementsByClassName('m6QErb DxyBCb kA9KIf dS8AEf')[0].scroll(0,"+str(1000*x)+")")
-                            time.sleep(1)
-                            photo=driver.find_elements(By.CLASS_NAME,"Uf0tqf.loaded" )[x].get_attribute("style")
-                            
-                            
-                            #pyautogui.moveTo(240,850)
-                            #pyautogui.scroll(-1000)
-                            time.sleep(1)
-                            
-                        
-                            xyLoc1=photo.find('"')
-                            xyLoc3=photo.find('"',xyLoc1+1)
-                            photoUrl=""
-
-                            for i in range(xyLoc1+1,xyLoc3):
-                                photoUrl= photoUrl+photo[i]
-                            #print(photoUrl)
-
-                            # فتح صورة فارغة بإسم الصورة المطلوبة
-                            f = open(
-                                "imgs\\"+city+"\\" +checkExist +"\\"+ "Photo"  +  str(x)+ '.jpg',
-                                'wb')
-
-                            # طباعة محتويات الصورة المأخوذة بداخل الصفحة الفارغة
-                            f.write(requests.get(photoUrl).content)
-                            time.sleep(1)
-                            f.close()
-                        except: pass
-                    driver.find_element(By.CLASS_NAME,"zbrIY.oms55c" ).click() # back button
-                    time.sleep(3)
-
-            checkExist=gittingInformations("area")
+            if oneTypePosts != "y":
+                checkExist=gittingInformations("area")
+            if oneTypePosts == "y":
+                checkExist=gittingInformations(typeArea)
             if (checkExist != "is exisist"):
                 gittingPhotos(checkExist, 15)      
 
                 ################serching###################################
-            def serching2(loc):
-                    
-                    try:
-                        driver.find_element(By.CLASS_NAME,"gsst_a" ).click() # remove text button
-                        time.sleep(3)
-                    except:
-                        time.sleep(3)
-                        driver.find_element(By.ID,"sb_cb50" ) .click() # remove text button
-                        time.sleep(3)
-                    driver.find_element(By.CLASS_NAME,"tactile-searchbox-input.searchboxinput.xiQnY" ).send_keys(loc)
-                    time.sleep(3)
-                    driver.find_element(By.ID,"searchbox-searchbutton" ).click() # serch button
-                    time.sleep(3)
-                    driver.find_element(By.ID,"searchbox-searchbutton" ).click() # serch button
-                    time.sleep(3)
-
-            def serching( about , numperLoc, removeText):
-                if removeText=="y":     
-                    try:
-                        driver.find_element(By.CLASS_NAME,"gsst_a" ).click() # remove text button
-                        time.sleep(3)
-                    except:
-                        time.sleep(3)
-                        driver.find_element(By.ID,"sb_cb50" ) .click() # remove text button
-                        time.sleep(3)
-                    driver.find_element(By.CLASS_NAME,"tactile-searchbox-input.searchboxinput.xiQnY" ).send_keys(about)
-                    time.sleep(3)
-                    driver.find_element(By.CLASS_NAME,"mL3xi" ).click() # serch button
-                time.sleep(5)
-                print("numperLoc", str(numperLoc))
-                driver.find_elements(By.CLASS_NAME,"hfpxzc" )[numperLoc].click() # numperLoc button
-                time.sleep(5)
-
-
+           
 
 
             ################################## eczane,Lokanta, cami############################################
-            for n in range(3):
-                
-                if n ==0 :
-                    numperYouWant=3
-                    x=0
-                    for g in range(10):
-                        try:
-                            if g!= 0: serching("eczane", g, "n")
-                            elif g==0 :serching("eczane", g, "y") 
-                            if (x != numperYouWant):
-                                try: 
-                                    try:
-                                        driver.find_element(By.CLASS_NAME,"YkuOqf" ) # photos button
-                                    except:
-                                        driver.find_element(By.CLASS_NAME,"jtJMuf" )# photos button2
-                                    checkExist=gittingInformations("eczane")
-                                    if (checkExist != "is exisist"):
-                                        gittingPhotos(checkExist, 5)
-                                        x+=1
-                                    print("try")
-                                except: 
-                                    photosNumper="No Photos"
-                                    print(photosNumper) 
-
-                                    checkExist=gittingInformations("eczane")
-                                    if (checkExist != "is exisist"):
-                                        gittingPhotos(checkExist, 5)
-                                        x+=1
-                                        shutil.copy("Logo.jpg","imgs\\"+city+"\\" +checkExist+ "\\Logo.jpg")
-
-                            else:
-                                break
+            if oneTypePosts != "y":
+                for n in range(3):
+                    
+                    if n ==0 :
+                        numperYouWant=3
+                        x=0
+                        for g in range(10):
                             try:
-                                driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').firstChild.scroll(0,"+str(200*x)+"))")
-                                #pyautogui.moveTo(240,850)
-                                #pyautogui.scroll(-200)
+                                if g!= 0: serching("eczane", g, "n")
+                                elif g==0 :serching("eczane", g, "y") 
+                                if (x != numperYouWant):
+                                    try: 
+                                        try:
+                                            driver.find_element(By.CLASS_NAME,"YkuOqf" ) # photos button
+                                        except:
+                                            driver.find_element(By.CLASS_NAME,"jtJMuf" )# photos button2
+                                        checkExist=gittingInformations("eczane")
+                                        if (checkExist != "is exisist"):
+                                            gittingPhotos(checkExist, 5)
+                                            x+=1
+                                        print("try")
+                                    except: 
+                                        photosNumper="No Photos"
+                                        print(photosNumper) 
+
+                                        checkExist=gittingInformations("eczane")
+                                        if (checkExist != "is exisist"):
+                                            gittingPhotos(checkExist, 5)
+                                            x+=1
+                                            shutil.copy("Logo.jpg","imgs\\"+city+"\\" +checkExist+ "\\Logo.jpg")
+
+                                else:
+                                    break
+                                try:
+                                    driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').firstChild.scroll(0,"+str(200*x)+"))")
+                                    #pyautogui.moveTo(240,850)
+                                    #pyautogui.scroll(-200)
+                                except:
+                                    driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scroll(0,"+str(200*x)+")")
+                                time.sleep(1)
+                        
+
+                                                
                             except:
-                                driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scroll(0,"+str(200*x)+")")
-                            time.sleep(1)
-                    
-
-                                            
-                        except:
-                            break
-                    
-
-
-                
-
-                if n ==1 :
-                    numperYouWant=5
-                    x=0
-                    serching2(xyLoc)
-                    for g in range(10):
-                        try:
-                            if g!= 0: serching("Lokanta", g, "n")
-                            elif g==0 :serching("Lokanta", g, "y")  
-                            if (x != numperYouWant):
-                                try: 
-                                    try:
-                                        driver.find_element(By.CLASS_NAME,"YkuOqf" ) # photos button
-                                    except:
-                                        driver.find_element(By.CLASS_NAME,"jtJMuf" )# photos button2
-                                    checkExist=gittingInformations("Lokanta")
-                                    if (checkExist != "is exisist"):
-                                        gittingPhotos(checkExist,15)
-                                        x+=1
-                                except: 
-                                    photosNumper="No Photos"
-                                    print(photosNumper) 
-                            else:
                                 break
+                        
 
-                            try:
-                                driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').firstChild.scroll(0,"+str(200*x)+"))")
-                                #pyautogui.moveTo(240,850)
-                                #pyautogui.scroll(-200)
-                            except:
-                                driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scroll(0,"+str(200*x)+")")
-                            time.sleep(1)
 
-                        except:
-                            break
-                        
-                        
-                        
-                
-                if n ==2 :
                     
-                    numperYouWant=3
-                    x=0
-                    serching2(xyLoc)
-                    for g in range(10):
-                        try:
-                            if g!= 0: serching("cami", g, "n")
-                            elif g==0 :serching("cami", g, "y")  
-                        
-                            if (x != numperYouWant):
-                                try: 
-                                    try:
-                                        driver.find_element(By.CLASS_NAME,"YkuOqf" ) # photos button
-                                    except:
-                                        driver.find_element(By.CLASS_NAME,"jtJMuf" )# photos button2
-                                    checkExist=gittingInformations("cami")
-                                    if (checkExist != "is exisist"):
-                                        gittingPhotos(checkExist,1)
-                                        x+=1
-                                except: 
-                                    photosNumper="No Photos"
-                                    print(photosNumper) 
-                                    checkExist=gittingInformations("eczane")
-                                    if (checkExist != "is exisist"):
-                                        gittingPhotos(checkExist, 5)
-                                        x+=1
-                                        shutil.copy("Logo.jpg","imgs\\"+city+"\\" +checkExist+ "\\Logo.jpg")
-                            else:
+
+                    if n ==1 :
+                        numperYouWant=5
+                        x=0
+                        serching2(xyLoc)
+                        for g in range(10):
+                            try:
+                                if g!= 0: serching("Lokanta", g, "n")
+                                elif g==0 :serching("Lokanta", g, "y")  
+                                if (x != numperYouWant):
+                                    try: 
+                                        try:
+                                            driver.find_element(By.CLASS_NAME,"YkuOqf" ) # photos button
+                                        except:
+                                            driver.find_element(By.CLASS_NAME,"jtJMuf" )# photos button2
+                                        checkExist=gittingInformations("Lokanta")
+                                        if (checkExist != "is exisist"):
+                                            gittingPhotos(checkExist,15)
+                                            x+=1
+                                    except: 
+                                        photosNumper="No Photos"
+                                        print(photosNumper) 
+                                else:
+                                    break
+
+                                try:
+                                    driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').firstChild.scroll(0,"+str(200*x)+"))")
+                                    #pyautogui.moveTo(240,850)
+                                    #pyautogui.scroll(-200)
+                                except:
+                                    driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scroll(0,"+str(200*x)+")")
+                                time.sleep(1)
+
+                            except:
                                 break
                             
+                            
+                            
+                    
+                    if n ==2 :
+                        
+                        numperYouWant=3
+                        x=0
+                        serching2(xyLoc)
+                        for g in range(10):
                             try:
-                                driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').firstChild.scroll(0,"+str(200*x)+"))")
-                                #pyautogui.moveTo(240,850)
-                                #pyautogui.scroll(-200)
+                                if g!= 0: serching("cami", g, "n")
+                                elif g==0 :serching("cami", g, "y")  
+                            
+                                if (x != numperYouWant):
+                                    try: 
+                                        try:
+                                            driver.find_element(By.CLASS_NAME,"YkuOqf" ) # photos button
+                                        except:
+                                            driver.find_element(By.CLASS_NAME,"jtJMuf" )# photos button2
+                                        checkExist=gittingInformations("cami")
+                                        if (checkExist != "is exisist"):
+                                            gittingPhotos(checkExist,1)
+                                            x+=1
+                                    except: 
+                                        photosNumper="No Photos"
+                                        print(photosNumper) 
+                                        checkExist=gittingInformations("eczane")
+                                        if (checkExist != "is exisist"):
+                                            gittingPhotos(checkExist, 5)
+                                            x+=1
+                                            shutil.copy("Logo.jpg","imgs\\"+city+"\\" +checkExist+ "\\Logo.jpg")
+                                else:
+                                    break
+                                
+                                try:
+                                    driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').firstChild.scroll(0,"+str(200*x)+"))")
+                                    #pyautogui.moveTo(240,850)
+                                    #pyautogui.scroll(-200)
+                                except:
+                                    driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scroll(0,"+str(200*x)+")")
+                                time.sleep(1)
                             except:
-                                driver.execute_script("document.querySelector('.m6QErb.DxyBCb.kA9KIf.dS8AEf.ecceSd').scroll(0,"+str(200*x)+")")
-                            time.sleep(1)
-                        except:
-                            break
-            
+                                break
+                
 
 
 #####################################################################

@@ -232,3 +232,36 @@ Yasemin Fast Food
 Kudsiye Camii
 Şarampol Camii
 Arap Mescit Cami
+
+Agora Avm
+Laura Avm
+Agora Antalya AVM
+Shemall
+MarkAntalya AVM
+Erasta AVM Antalya
+Birim AVM Güllük Şube
+TAHTAKALE AVM
+Manavgat city AVM
+Kipa AVM
+Birim Avm
+ÖzdilekPark Antalya AVM
+Boyner Antalya Migros AVM
+Veni Vidi Göz Antalya
+Özel Uncalı Meydan Hastanesi
+Anatolia Hospital Antalya
+Medstar Topçular Hastanesi
+Medical Park Antalya Hastanesi
+Özel Opera Yaşam Hastanesi
+Antalya Eğitim ve Araştırma Hastanesi
+Özel Antalya Tıp Merkezi
+Özel OFM Antalya Hastanesi
+Özel Olimpos Hastanesi
+Özel Termessos Hastanesi
+Anatolia Hospital Lara
+Özel Rich Hospital Hastanesi
+Özel Çallı Meydan Tıp Merkezi
+Memorial Antalya Hastanesi
+Özel Akdeniz Şifa Hastanesi
+Özel Antalya Yaşam Hastanesi
+Medstar Antalya Hastanesi
+Özel Akdeniz Sağlık Vakfı (ASV) Yaşam Hastanesi

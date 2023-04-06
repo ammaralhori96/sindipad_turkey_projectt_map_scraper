@@ -2,8 +2,8 @@ import requests
 import os
 import pandas
 
-city="istanbul"
-url = 'https://seasonturk.com/api/method/tourism_backend.upload_data.upload_data'
+city="Rize"
+url = 'http://38.242.231.219/api/method/tourism_backend.upload_data.upload_data'
 imgs_folder = 'imgs\\'+city
 csv_data_file = "data.csv"
 
